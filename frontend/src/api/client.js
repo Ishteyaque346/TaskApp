@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { tokenStorage } from '../utils/tokenStorage.js';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://task3-backend1.onrender.com';
+const API_URL = import.meta.env.VITE_API_URL || 'https://task3-backend-ow04.onrender.com/';
 
 export const apiClient = axios.create({
   baseURL: API_URL,
