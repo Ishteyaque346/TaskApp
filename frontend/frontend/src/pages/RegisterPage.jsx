@@ -48,8 +48,9 @@ export const RegisterPage = () => {
     } catch (error) {
       const errorMsg = error.response?.data?.error || 'Registration failed';
       setToast({ message: errorMsg, type: 'error' });
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (

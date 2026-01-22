@@ -4,23 +4,19 @@ import { useAuth } from '../hooks/useAuth.js';
 import { authAPI } from '../api/auth.js';
 import { Toast } from '../components/Toast.jsx';
 
-export const RegisterPage = () => {
+export const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [toast, setToast] = useState(null);
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
-    else if (formData.name.length < 2) newErrors.name = 'Name must be at least 2 characters';
     if (!formData.email) newErrors.email = 'Email is required';
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Invalid email';
     if (!formData.password) newErrors.password = 'Password is required';
-    else if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
-    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
     return newErrors;
   };
 
@@ -41,15 +37,16 @@ export const RegisterPage = () => {
 
     setIsLoading(true);
     try {
-      const data = await authAPI.register(formData);
+      const data = await authAPI.login(formData);
       login(data.user, data.token);
-      setToast({ message: 'Registration successful!', type: 'success' });
+      setToast({ message: 'Login successful!', type: 'success' });
       setTimeout(() => navigate('/dashboard'), 1000);
     } catch (error) {
-      const errorMsg = error.response?.data?.error || 'Registration failed';
+      const errorMsg = error.response?.data?.error || 'Login failed';
       setToast({ message: errorMsg, type: 'error' });
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (
@@ -57,25 +54,10 @@ export const RegisterPage = () => {
       {toast && <div className="fixed top-4 right-4"><Toast {...toast} onClose={() => setToast(null)} /></div>}
       
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-8">
-        <h1 className="text-3xl font-bold mb-2 text-center">Create Account</h1>
-        <p className="text-gray-600 text-center mb-6">Join us today</p>
+        <h1 className="text-3xl font-bold mb-2 text-center">Welcome Back</h1>
+        <p className="text-gray-600 text-center mb-6">Sign in to your account</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Full Name</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none ${
-                errors.name ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
-              }`}
-              placeholder="John Doe"
-            />
-            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-          </div>
-
           <div>
             <label className="block text-sm font-medium mb-1">Email</label>
             <input
@@ -106,32 +88,17 @@ export const RegisterPage = () => {
             {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Confirm Password</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none ${
-                errors.confirmPassword ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
-              }`}
-              placeholder="••••••"
-            />
-            {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
-          </div>
-
           <button
             type="submit"
             disabled={isLoading}
             className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 transition"
           >
-            {isLoading ? 'Creating account...' : 'Sign Up'}
+            {isLoading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 
         <p className="text-center mt-4 text-gray-600">
-          Already have an account? <Link to="/login" className="text-blue-600 font-semibold hover:underline">Sign in</Link>
+          Don't have an account? <Link to="/register" className="text-blue-600 font-semibold hover:underline">Sign up</Link>
         </p>
       </div>
     </div>
