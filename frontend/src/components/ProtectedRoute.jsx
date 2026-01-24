@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth.js';
 export const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
 
+  // ✅ While loading, show spinner
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -13,5 +14,12 @@ export const ProtectedRoute = ({ children }) => {
     );
   }
 
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  // ✅ Check if authenticated
+  if (!isAuthenticated) {
+    // Not authenticated, redirect to login
+    return <Navigate to="/login" />;
+  }
+
+  // ✅ User is authenticated, show page
+  return children;
 };

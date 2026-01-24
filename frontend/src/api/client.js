@@ -10,7 +10,7 @@ export const apiClient = axios.create({
   }
 });
 
-// Add token to requests
+// ✅ Request Interceptor - Add token
 apiClient.interceptors.request.use(
   (config) => {
     const token = tokenStorage.get();
@@ -22,13 +22,14 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Handle 401 responses
+// ✅ Response Interceptor - Handle 401
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    // If 401, token is invalid
     if (error.response?.status === 401) {
-      tokenStorage.remove();
-      window.location.href = '/login';
+      tokenStorage.remove(); // Clear token
+      window.location.href = '/login'; // Redirect to login
     }
     return Promise.reject(error);
   }

@@ -30,7 +30,7 @@ function App() {
             }
           />
 
-          {/* Profile Route */}
+          {/* ✅ Profile Route - PROTECTED */}
           <Route
             path="/profile"
             element={
@@ -43,8 +43,8 @@ function App() {
             }
           />
 
-          {/* Redirect root to dashboard */}
-          <Route path="/" element={<Navigate to="/login" />} />
+          {/* Catch all - redirect to dashboard */}
+          <Route path="/" element={<Navigate to="/dashboard" />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
